@@ -2,9 +2,9 @@
 
 A neon-lit mini online store for shirts, jeans, shoes and watches. It is a single HTML file, so there is nothing to install and nothing to build.
 
-![Littlecart screenshot](screenshot.png)
+!
 
-**Live demo:** `https://<your-username>.github.io/<repo-name>/`
+**Live demo:** `https://ankurquant.github.io/littlecart/`
 
 ---
 
@@ -31,7 +31,7 @@ Download the file and open `index.html` in any browser. That's it.
 1. Push the repo to GitHub with the file named `index.html`.
 2. Go to **Settings → Pages**.
 3. Under **Source**, choose the `main` branch and the `/ (root)` folder, then save.
-4. Your site will be live at `https://<your-username>.github.io/<repo-name>/` in a minute or two.
+4. Your site will be live at `https://ankurquant.github.io/littlecart/` in a minute or two.
 
 ## How the coupon works
 
@@ -60,8 +60,8 @@ A code like `DIWALI4821` is generated every time the page loads and is shown at 
 
 ## License
 
-MIT License. Add a `LICENSE` file if you want to use this.
+MIT License. 
 
 ---
 
-Made by `<your-name>`
+Made by `Ankur Tiwari`
