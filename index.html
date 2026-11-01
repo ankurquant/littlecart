@@ -1,0 +1,772 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <title>Littlecart</title>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Tilt+Neon&family=Sora:wght@300;400;600&display=swap"
+        />
+        <style>
+            :root {
+                color-scheme: dark;
+                --bg: #07050e;
+                --panel: #0e0a1c;
+                --ink: #ece8ff;
+                --muted: #9a93c4;
+                --line: #2a2350;
+                --pink: #ff3cac;
+                --cyan: #2de2ff;
+                --lime: #b6ff3b;
+                --amber: #ffb02e;
+                box-sizing: border-box;
+                padding-top: env(safe-area-inset-top, 0px);
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+            }
+            html {
+                scroll-padding-top: env(safe-area-inset-top, 0px);
+            }
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                min-height: 100vh;
+                color: var(--ink);
+                font-family:
+                    "Sora",
+                    system-ui,
+                    -apple-system,
+                    "Segoe UI",
+                    sans-serif;
+                background:
+                    radial-gradient(
+                        ellipse 70% 45% at 50% -8%,
+                        #2b0f45 0%,
+                        transparent 65%
+                    ),
+                    radial-gradient(
+                        ellipse 50% 40% at 100% 100%,
+                        #062b3d 0%,
+                        transparent 65%
+                    ),
+                    var(--bg);
+                background-color: var(--bg);
+            }
+            button {
+                font: inherit;
+                color: inherit;
+                cursor: pointer;
+            }
+            :focus-visible {
+                outline: 2px solid #fff;
+                outline-offset: 2px;
+            }
+            .wrap {
+                max-width: 1180px;
+                margin: 0 auto;
+                padding: 1.6rem 1rem 3rem;
+            }
+
+            /* sign */
+            .sign {
+                font-family: "Tilt Neon", "Sora", sans-serif;
+                text-align: center;
+                margin: 0.4rem 0 0;
+                font-size: clamp(2.8rem, 10vw, 6rem);
+                line-height: 1.05;
+                letter-spacing: 0.05em;
+                font-weight: 400;
+            }
+            .sign .a {
+                color: #ffe6f6;
+                text-shadow:
+                    0 0 3px #fff,
+                    0 0 10px var(--pink),
+                    0 0 26px var(--pink),
+                    0 0 60px #ff3cacaa;
+            }
+            .sign .b {
+                color: #e2fbff;
+                text-shadow:
+                    0 0 3px #fff,
+                    0 0 10px var(--cyan),
+                    0 0 26px var(--cyan),
+                    0 0 60px #2de2ffaa;
+                animation: ignite 1.5s linear 1 both;
+            }
+            @keyframes ignite {
+                0% {
+                    opacity: 0.1;
+                }
+                8% {
+                    opacity: 1;
+                }
+                12% {
+                    opacity: 0.15;
+                }
+                18% {
+                    opacity: 1;
+                }
+                22% {
+                    opacity: 0.35;
+                }
+                28%,
+                100% {
+                    opacity: 1;
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .sign .b {
+                    animation: none;
+                }
+            }
+            .tag {
+                text-align: center;
+                color: var(--muted);
+                font-weight: 300;
+                margin: 0.3rem 0 1rem;
+            }
+            .pill {
+                display: block;
+                width: fit-content;
+                max-width: 100%;
+                margin: 0 auto 1.8rem;
+                padding: 0.45rem 1.1rem;
+                border-radius: 999px;
+                border: 1px dashed var(--pink);
+                font-size: 0.9rem;
+                text-align: center;
+                box-shadow:
+                    0 0 12px #ff3cac55,
+                    inset 0 0 12px #ff3cac22;
+            }
+            .pill b {
+                color: #fff;
+                text-shadow: 0 0 8px var(--pink);
+                letter-spacing: 0.04em;
+            }
+
+            /* layout */
+            .layout {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 340px;
+                gap: 1.8rem;
+                align-items: start;
+            }
+            @media (max-width: 860px) {
+                .layout {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            /* tabs */
+            .tabs {
+                display: flex;
+                gap: 0.3rem;
+                border-bottom: 1px solid var(--line);
+                margin-bottom: 1.2rem;
+                overflow-x: auto;
+            }
+            .tab {
+                background: none;
+                border: 0;
+                border-bottom: 2px solid transparent;
+                padding: 0.7rem 1rem;
+                color: var(--muted);
+                font-weight: 600;
+                white-space: nowrap;
+            }
+            .tab[aria-selected="true"] {
+                color: var(--c);
+                border-bottom-color: var(--c);
+                text-shadow: 0 0 12px var(--c);
+            }
+            .tab:hover {
+                color: var(--ink);
+            }
+
+            /* cards */
+            .grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+                gap: 1rem;
+            }
+            .card {
+                background: var(--panel);
+                border: 1px solid var(--neon);
+                border-radius: 14px;
+                padding: 1.1rem 1.2rem 1.1rem;
+                box-shadow:
+                    0 0 8px color-mix(in srgb, var(--neon) 40%, transparent),
+                    inset 0 0 22px
+                        color-mix(in srgb, var(--neon) 10%, transparent);
+            }
+            .card h3 {
+                margin: 0;
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #fff;
+                text-shadow: 0 0 10px var(--neon);
+            }
+            .price {
+                font-size: 1.35rem;
+                font-weight: 300;
+                color: var(--neon);
+                text-shadow: 0 0 12px var(--neon);
+                margin: 0.1rem 0 0.7rem;
+            }
+            .stock {
+                display: flex;
+                align-items: center;
+                gap: 0.7rem;
+                font-size: 0.82rem;
+                color: var(--muted);
+                margin-bottom: 0.8rem;
+            }
+            .bar {
+                flex: 1;
+                height: 4px;
+                border-radius: 4px;
+                background: #241d45;
+                overflow: hidden;
+            }
+            .bar i {
+                display: block;
+                height: 100%;
+                background: var(--neon);
+                box-shadow: 0 0 8px var(--neon);
+            }
+            .stock.out .bar i {
+                background: #4a4470;
+                box-shadow: none;
+            }
+            .row {
+                display: flex;
+                gap: 0.5rem;
+            }
+            .step {
+                display: flex;
+                align-items: center;
+                border: 1px solid #382f6b;
+                border-radius: 10px;
+                background: #15102b;
+            }
+            .step button {
+                background: none;
+                border: 0;
+                width: 2rem;
+                height: 2.4rem;
+                color: var(--ink);
+            }
+            .step output {
+                min-width: 1.6rem;
+                text-align: center;
+                font-weight: 600;
+            }
+            .btn {
+                background: transparent;
+                border: 1px solid var(--neon, #5b5290);
+                color: var(--neon, var(--ink));
+                border-radius: 10px;
+                padding: 0.55rem 0.9rem;
+                font-weight: 600;
+                transition:
+                    box-shadow 0.15s,
+                    background 0.15s;
+            }
+            .btn:hover {
+                background: #ffffff0f;
+                box-shadow:
+                    0 0 14px var(--neon, #8d86b3),
+                    inset 0 0 10px #ffffff10;
+            }
+            .btn:disabled,
+            .step button:disabled {
+                opacity: 0.3;
+                cursor: not-allowed;
+                box-shadow: none;
+            }
+            .add {
+                flex: 1;
+            }
+            .go {
+                width: 100%;
+                background: var(--cyan);
+                border: 1px solid var(--cyan);
+                color: #04121a;
+                border-radius: 10px;
+                padding: 0.7rem;
+                font-weight: 600;
+                box-shadow: 0 0 18px #2de2ff88;
+                transition: box-shadow 0.15s;
+            }
+            .go:hover {
+                box-shadow: 0 0 30px #2de2ffcc;
+            }
+            .go:disabled {
+                background: #1a2b36;
+                border-color: #1a2b36;
+                box-shadow: none;
+                color: var(--muted);
+                cursor: not-allowed;
+            }
+
+            /* basket */
+            .basket {
+                --neon: var(--cyan);
+                background: var(--panel);
+                border: 1px solid var(--cyan);
+                border-radius: 14px;
+                padding: 1.2rem 1.3rem;
+                box-shadow:
+                    0 0 10px #2de2ff66,
+                    inset 0 0 26px #2de2ff1a;
+                position: sticky;
+                top: 1rem;
+            }
+            @media (max-width: 860px) {
+                .basket {
+                    position: static;
+                }
+            }
+            .basket h2 {
+                font-family: "Tilt Neon", "Sora", sans-serif;
+                font-weight: 400;
+                font-size: 1.7rem;
+                margin: 0 0 0.6rem;
+                color: #e2fbff;
+                text-shadow:
+                    0 0 4px #fff,
+                    0 0 14px var(--cyan);
+            }
+            .empty {
+                color: var(--muted);
+                font-weight: 300;
+                padding: 0.4rem 0 0.6rem;
+            }
+            .item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid var(--line);
+            }
+            .item .t {
+                flex: 1;
+                line-height: 1.35;
+            }
+            .item .t b {
+                color: #fff;
+                font-weight: 600;
+            }
+            .item .t span {
+                color: var(--muted);
+                font-size: 0.82rem;
+            }
+            .mini {
+                width: 2rem;
+                height: 2rem;
+                padding: 0;
+                border-radius: 8px;
+            }
+            label.cl {
+                display: block;
+                margin: 1rem 0 0.3rem;
+                color: var(--muted);
+                font-size: 0.85rem;
+            }
+            input.code {
+                width: 100%;
+                background: #15102b;
+                border: 1px solid #382f6b;
+                border-radius: 10px;
+                color: var(--ink);
+                padding: 0.6rem 0.8rem;
+                font: inherit;
+                text-transform: uppercase;
+            }
+            .msg {
+                font-size: 0.85rem;
+                min-height: 1.2rem;
+                margin-top: 0.3rem;
+            }
+            .msg.ok {
+                color: var(--lime);
+                text-shadow: 0 0 8px #b6ff3b88;
+            }
+            .msg.bad {
+                color: #ff7a8a;
+            }
+            .sum,
+            .total {
+                display: flex;
+                justify-content: space-between;
+                color: var(--muted);
+                padding: 0.15rem 0;
+            }
+            .sum.disc {
+                color: var(--lime);
+                text-shadow: 0 0 8px #b6ff3b88;
+            }
+            .total {
+                color: #fff;
+                font-size: 1.35rem;
+                font-weight: 600;
+                margin: 0.4rem 0 0.9rem;
+                border-top: 1px solid var(--line);
+                padding-top: 0.6rem;
+                text-shadow: 0 0 12px var(--cyan);
+            }
+            .stack {
+                display: grid;
+                gap: 0.5rem;
+            }
+            .receipt {
+                border: 1px solid var(--lime);
+                border-radius: 12px;
+                padding: 0.9rem 1rem;
+                margin-bottom: 0.9rem;
+                box-shadow:
+                    0 0 14px #b6ff3b55,
+                    inset 0 0 16px #b6ff3b18;
+            }
+            .receipt h3 {
+                margin: 0 0 0.4rem;
+                color: var(--lime);
+                text-shadow: 0 0 10px var(--lime);
+                font-weight: 600;
+                font-size: 1rem;
+            }
+            .receipt .r {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.9rem;
+                gap: 1rem;
+            }
+            .foot {
+                text-align: center;
+                color: var(--muted);
+                font-size: 0.8rem;
+                margin-top: 2.5rem;
+            }
+            .foot .btn {
+                margin-top: 0.6rem;
+            }
+
+            /* toast */
+            #toast {
+                position: fixed;
+                left: 50%;
+                bottom: calc(1.2rem + env(safe-area-inset-bottom, 0px));
+                transform: translate(-50%, 20px);
+                opacity: 0;
+                background: var(--panel);
+                border: 1px solid var(--lime);
+                border-radius: 999px;
+                padding: 0.55rem 1.1rem;
+                font-size: 0.9rem;
+                box-shadow: 0 0 16px #b6ff3b66;
+                transition:
+                    opacity 0.2s,
+                    transform 0.2s;
+                pointer-events: none;
+                z-index: 5;
+            }
+            #toast.show {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+            @media (prefers-reduced-motion: reduce) {
+                #toast {
+                    transition: none;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrap">
+            <h1 class="sign">
+                <span class="a">LITTLE</span><span class="b">CART</span>
+            </h1>
+            <p class="tag">Shirts, jeans, shoes and watches. One basket.</p>
+            <span class="pill"
+                >Tonight’s code <b id="codeShow"></b> takes 20% off your
+                basket</span
+            >
+
+            <div class="layout">
+                <main>
+                    <div class="tabs" role="tablist" id="tabs"></div>
+                    <section class="grid" id="grid"></section>
+                </main>
+                <aside class="basket" aria-label="Basket">
+                    <h2>Basket</h2>
+                    <div id="receipt"></div>
+                    <div id="lines"></div>
+                    <div id="checkout" hidden>
+                        <label class="cl" for="code">Coupon code</label>
+                        <input
+                            class="code"
+                            id="code"
+                            placeholder="Enter your code"
+                            autocomplete="off"
+                        />
+                        <div class="msg" id="msg" aria-live="polite"></div>
+                        <div id="sums"></div>
+                        <div class="stack">
+                            <button class="go" data-a="order">
+                                Place order
+                            </button>
+                            <button class="btn" data-a="clear">
+                                Clear basket
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="foot">
+                Stock and coupon are random each visit.<br /><button
+                    class="btn"
+                    data-a="restock"
+                >
+                    Restock shelves
+                </button>
+            </div>
+        </div>
+        <div id="toast" role="status" aria-live="polite"></div>
+
+        <script>
+            const CATS = [
+                {
+                    name: "Shirts",
+                    c: "#ff3cac",
+                    items: [
+                        ["Red shirt", 1500],
+                        ["White shirt", 1500],
+                        ["Blue shirt", 1500],
+                        ["Yellow shirt", 1500],
+                    ],
+                },
+                {
+                    name: "Jeans",
+                    c: "#2de2ff",
+                    items: [
+                        ["Black jeans", 2000],
+                        ["Blue jeans", 2000],
+                        ["Brown jeans", 2000],
+                        ["White jeans", 2000],
+                    ],
+                },
+                {
+                    name: "Shoes",
+                    c: "#b6ff3b",
+                    items: [
+                        ["Nike", 2500],
+                        ["Redtape", 2300],
+                        ["Bluetape", 2100],
+                        ["Blacktape", 2000],
+                    ],
+                },
+                {
+                    name: "Watches",
+                    c: "#ffb02e",
+                    items: [
+                        ["Patek", 200000000],
+                        ["Jacob&Co", 20000000],
+                        ["Rolex", 30000000],
+                    ],
+                },
+            ];
+            const MAX = 50,
+                RATE = 0.2;
+            const ITEMS = [];
+            CATS.forEach((cat, ci) =>
+                cat.items.forEach(([n, p]) => ITEMS.push({ n, p, ci })),
+            );
+
+            const $ = (id) => document.getElementById(id);
+            const esc = (s) =>
+                s.replace(
+                    /[&<>"]/g,
+                    (c) =>
+                        ({
+                            "&": "&amp;",
+                            "<": "&lt;",
+                            ">": "&gt;",
+                            '"': "&quot;",
+                        })[c],
+                );
+            const inr = (n) =>
+                "₹" + new Intl.NumberFormat("en-IN").format(Math.round(n));
+
+            let S;
+            function fresh() {
+                S = {
+                    tab: S ? S.tab : 0,
+                    stock: ITEMS.map(() => Math.floor(Math.random() * MAX)),
+                    cart: {}, // item index -> qty
+                    qty: ITEMS.map(() => 1),
+                    coupon: "DIWALI" + (1 + Math.floor(Math.random() * 9998)),
+                    receipt: null,
+                };
+                $("codeShow").textContent = S.coupon;
+                $("code").value = "";
+            }
+            const left = (i) => S.stock[i] - (S.cart[i] || 0);
+            const applied = () =>
+                $("code").value.trim().toUpperCase() === S.coupon;
+            function totals() {
+                const sub = Object.entries(S.cart).reduce(
+                    (t, [i, q]) => t + ITEMS[i].p * q,
+                    0,
+                );
+                const disc = applied() ? sub * RATE : 0;
+                return { sub, disc, total: sub - disc };
+            }
+
+            function drawTabs() {
+                $("tabs").innerHTML = CATS.map(
+                    (c, i) =>
+                        `<button class="tab" role="tab" style="--c:${c.c}" aria-selected="${i === S.tab}" data-a="tab" data-i="${i}">${c.name}</button>`,
+                ).join("");
+            }
+            function drawGrid() {
+                $("grid").innerHTML = ITEMS.map((it, i) => ({ it, i }))
+                    .filter(({ it }) => it.ci === S.tab)
+                    .map(({ it, i }) => {
+                        const r = left(i);
+                        const q = Math.min(S.qty[i], Math.max(r, 1));
+                        S.qty[i] = q;
+                        const status =
+                            r === 0
+                                ? "Sold out"
+                                : r <= 5
+                                  ? `Only ${r} left`
+                                  : `${r} in stock`;
+                        return `<article class="card" style="--neon:${CATS[it.ci].c}">
+      <h3>${esc(it.n)}</h3>
+      <div class="price">${inr(it.p)}</div>
+      <div class="stock ${r === 0 ? "out" : ""}"><span class="bar"><i style="width:${Math.min((r / MAX) * 100, 100)}%"></i></span><span>${status}</span></div>
+      <div class="row">
+        <div class="step">
+          <button data-a="qm" data-i="${i}" aria-label="Fewer" ${r === 0 || q <= 1 ? "disabled" : ""}>−</button>
+          <output>${q}</output>
+          <button data-a="qp" data-i="${i}" aria-label="More" ${r === 0 || q >= r ? "disabled" : ""}>+</button>
+        </div>
+        <button class="btn add" data-a="add" data-i="${i}" ${r === 0 ? "disabled" : ""}>Add to basket</button>
+      </div></article>`;
+                    })
+                    .join("");
+            }
+            function drawBasket() {
+                const keys = Object.keys(S.cart);
+                $("lines").innerHTML = keys.length
+                    ? keys
+                          .map((i) => {
+                              const it = ITEMS[i],
+                                  q = S.cart[i];
+                              return `<div class="item"><div class="t"><b>${esc(it.n)}</b><br><span>${q} × ${inr(it.p)} = ${inr(q * it.p)}</span></div>
+      <button class="btn mini" style="--neon:${CATS[it.ci].c}" data-a="dec" data-i="${i}" aria-label="Remove one ${esc(it.n)}">−</button>
+      <button class="btn mini" style="--neon:${CATS[it.ci].c}" data-a="del" data-i="${i}" aria-label="Remove all ${esc(it.n)}">✕</button></div>`;
+                          })
+                          .join("")
+                    : `<div class="empty">Nothing in the basket yet. Pick something from the shelves.</div>`;
+                $("checkout").hidden = !keys.length;
+                drawSums();
+                const r = S.receipt;
+                $("receipt").innerHTML = r
+                    ? `<div class="receipt"><h3>Order placed</h3>
+    ${r.lines.map((l) => `<div class="r"><span>${l.q} × ${esc(l.n)}</span><span>${inr(l.q * l.p)}</span></div>`).join("")}
+    ${r.disc ? `<div class="r"><span>Coupon discount</span><span>−${inr(r.disc)}</span></div>` : ""}
+    <div class="r"><b>Paid</b><b>${inr(r.total)}</b></div></div>
+    <button class="btn" style="--neon:var(--lime);width:100%;margin-bottom:.8rem" data-a="dismiss">Keep shopping</button>`
+                    : "";
+            }
+            function drawSums() {
+                const { sub, disc, total } = totals();
+                const code = $("code").value.trim();
+                $("msg").className =
+                    "msg " + (applied() ? "ok" : code ? "bad" : "");
+                $("msg").textContent = applied()
+                    ? "20% off applied"
+                    : code
+                      ? "That code doesn’t match. Check the code at the top of the page."
+                      : "";
+                $("sums").innerHTML =
+                    `<div class="sum"><span>Subtotal</span><span>${inr(sub)}</span></div>` +
+                    (disc
+                        ? `<div class="sum disc"><span>Coupon, 20% off</span><span>−${inr(disc)}</span></div>`
+                        : "") +
+                    `<div class="total"><span>Total</span><span>${inr(total)}</span></div>`;
+            }
+            function draw() {
+                drawTabs();
+                drawGrid();
+                drawBasket();
+            }
+
+            let tt;
+            function toast(msg) {
+                const t = $("toast");
+                t.textContent = msg;
+                t.classList.add("show");
+                clearTimeout(tt);
+                tt = setTimeout(() => t.classList.remove("show"), 1800);
+            }
+
+            document.addEventListener("click", (e) => {
+                const b = e.target.closest("[data-a]");
+                if (!b || b.disabled) return;
+                const a = b.dataset.a,
+                    i = +b.dataset.i;
+                if (a === "tab") S.tab = i;
+                else if (a === "qm") S.qty[i] = Math.max(1, S.qty[i] - 1);
+                else if (a === "qp") S.qty[i] = Math.min(left(i), S.qty[i] + 1);
+                else if (a === "add") {
+                    const q = Math.min(S.qty[i], left(i));
+                    if (q < 1) return;
+                    S.cart[i] = (S.cart[i] || 0) + q;
+                    S.qty[i] = 1;
+                    toast(`${q} × ${ITEMS[i].n} added to basket`);
+                } else if (a === "dec") {
+                    if (--S.cart[i] <= 0) delete S.cart[i];
+                } else if (a === "del") delete S.cart[i];
+                else if (a === "clear") S.cart = {};
+                else if (a === "dismiss") S.receipt = null;
+                else if (a === "restock") {
+                    fresh();
+                    toast("Shelves restocked");
+                } else if (a === "order") {
+                    if (!Object.keys(S.cart).length) return;
+                    const { disc, total } = totals();
+                    S.receipt = {
+                        lines: Object.entries(S.cart).map(([k, q]) => ({
+                            n: ITEMS[k].n,
+                            p: ITEMS[k].p,
+                            q,
+                        })),
+                        disc,
+                        total,
+                    };
+                    for (const [k, q] of Object.entries(S.cart))
+                        S.stock[k] -= q;
+                    S.cart = {};
+                    $("code").value = "";
+                }
+                draw();
+            });
+            $("code").addEventListener("input", drawSums);
+
+            fresh();
+            draw();
+        </script>
+    </body>
+</html>
